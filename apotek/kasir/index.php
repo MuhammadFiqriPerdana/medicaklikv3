@@ -251,8 +251,8 @@ if (isset($_POST['import'])) {
         or die(mysqli_connect_error());
 
 
-        $UpdLap = mysqli_query($conn, "INSERT INTO laporan (invoice,kode_produk,nama_produk,harga,harga_modal,qty,subtotal,toko,user)
-        SELECT invoice,kode_produk,nama_produk,harga,harga_modal,qty,subtotal,'" . $_SESSION['toko'] . "','" . $_SESSION['username'] . "' FROM cart") or die(mysqli_connect_error());
+        $UpdLap = mysqli_query($conn, "INSERT INTO laporan (invoice,kode_produk,harga,harga_modal,qty,subtotal,toko,user)
+        SELECT invoice,kode_produk,harga,harga_modal,qty,subtotal,'" . $_SESSION['toko'] . "','" . $_SESSION['username'] . "' FROM cart") or die(mysqli_connect_error());
 
       $DelCart = mysqli_query($conn, "DELETE FROM cart") or die(mysqli_connect_error());
 

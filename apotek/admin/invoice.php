@@ -6,8 +6,9 @@ if (!empty($_GET['detail'])) {
 } else {
   echo '<script>history.go(-1);</script>';
 };
-$DataInv = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inv I INNER JOIN laporan L ON I.invoice = L.invoice WHERE i.invoice='$noinv'"));
+$DataInv = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM laporan L INNER JOIN inv I ON I.invoice = L.invoice LEFT JOIN produk P ON L.kode_produk = P.kode_produk WHERE i.invoice='$noinv'"));
 $Did = $DataInv['invid'];
+$Didlpaoran = $DataInv['idlaporan'];
 $Dbayar = $DataInv['pembayaran'];
 $Dkembali = $DataInv['kembalian'];
 $Datee = $DataInv['tgl_inv'];
@@ -46,7 +47,7 @@ $Datee = $DataInv['tgl_inv'];
     <?php
     $no = 1;
     $tot_bayar = 0;
-    $data_laporan = mysqli_query($conn, "SELECT * FROM laporan WHERE invoice='$noinv'");
+    $data_laporan = mysqli_query($conn, "SELECT * FROM laporan L LEFT JOIN produk P ON L.kode_produk = P.kode_produk WHERE L.invoice='$noinv'");
     while ($d = mysqli_fetch_array($data_laporan)) {
     ?>
       <tr>
@@ -56,7 +57,7 @@ $Datee = $DataInv['tgl_inv'];
         <td>Rp.<?php echo ribuan($d['harga']); ?></td>
         <td><?php echo $d['qty']; ?></td>
         <td>Rp.<?php echo ribuan($d['subtotal']); ?></td>
-        <td><button type="button" class="btn btn-primary btn-xs mr-1" data-toggle="modal" data-target="#EditProduk<?php echo $DataInv['invid'] ?>">
+        <td><button type="button" class="btn btn-primary btn-xs mr-1" data-toggle="modal" data-target="#EditProduk<?php echo $Didlpaoran ?>">
             <i class="fas fa-pencil-alt fa-xs mr-1"></i>Edit
           </button></td>
       </tr>
@@ -85,30 +86,34 @@ $i4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(subtotal) as isub FROM 
   </div>
 </div>
 
-<div class="modal fade" id="EditProduk<?php echo $DataInv['invid']; ?>" tabindex="-1" role="dialog">
+<div class="modal fade" id="EditProduk<?php echo $Didlpaoran ?>" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content border-0">
       <form method="post">
         <div class="modal-header bg-purple">
-          <h5 class="modal-title text-white">Edit Produk</h5>
+          <h5 class="modal-title text-white">Edit Invoice</h5>
           <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
           <div class="form-group">
+          <input type="hidden" name="idlaporan" value="<?php echo $d['idlaporan']; ?>">
+          </div>
+          <div class="form-group">
             <label class="samll">Produk :</label>
-            <select name="Edit_Produk" id="barang" class="form-control select2">
+            <select name="Edit_Produk1" id="barang" class="form-control select2">
               <option selected><?php echo $DataInv['nama_produk']; ?></option>
               <?php
               $data_produk = mysqli_query($conn, "SELECT * FROM produk where toko = '" . $_SESSION['toko'] . "'");
               while ($row = mysqli_fetch_array($data_produk)) {
                 $idBarang = $row['idproduk'];
                 $namaProduk = $row['nama_produk'];
+                $kodeproduk = $row['kode_produk'];
 
               ?>
 
-                <option value="<?php echo $idBarang ?>" idbarang="<?php echo $idBarang ?>">
+                <option value="<?php echo $kodeproduk ?>" idbarang="<?php echo $idBarang ?>">
                   <?php echo $namaProduk ?>
                 </option>
               <?php
@@ -257,3 +262,22 @@ $i4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(subtotal) as isub FROM 
     // console.log(url);
   });
 </script>
+
+
+<?php
+if (isset($_POST['SimpanEdit'])) {
+  
+  $idlaporan1 = htmlspecialchars($_POST['idlaporan']);
+  $kodeproduk1 = htmlspecialchars($_POST['Edit_Produk1']);
+  $harga1 = htmlspecialchars($_POST['Edit_Harga']);
+  $qty1 = htmlspecialchars($_POST['Edit_Qty']);
+  
+  $hitung = $harga1 * $qty1;
+
+  $update =  mysqli_query($conn, "UPDATE laporan SET kode_produk='$kodeproduk1', harga='$harga1',qty='$qty1',subtotal='$hitung' WHERE idlaporan='$Didlpaoran' AND toko = '" . $_SESSION['toko'] . "'") or die(mysqli_connect_error());
+  
+ 
+    
+};
+
+?>
