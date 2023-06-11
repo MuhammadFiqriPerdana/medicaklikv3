@@ -32,9 +32,30 @@ $logo = $DataLogin['logo'];
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <link href="../../assets/css/style.css" rel="stylesheet">
   <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
-  <link href="../../assets/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-  <link href="../../assets/vendor/datatables/responsive.bootstrap4.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+
+  <style>
+    .dt-buttons {
+            margin-bottom: 10px;
+        }
+        .dt-buttons .dt-button {
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-right: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .dt-buttons .dt-button:hover {
+            background-color: #0056b3;
+        }
+        .dt-buttons .dt-button:focus {
+            outline: none;
+        }
+  </style>
 
 </head>
 

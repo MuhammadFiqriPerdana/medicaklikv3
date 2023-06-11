@@ -5,7 +5,7 @@
   <button class="btn btn-primary btn-sm border-0 float-right" type="button" data-toggle="modal" data-target="#TambahProduk">Tambah Produk</button>
 </h1>
 <hr>
-<table class="table table-striped table-sm table-bordered dt-responsive nowrap" id="table" width="100%">
+<table class="table table-striped table-sm table-bordered dt-responsive nowrap display" id="table" width="100%">
   <thead>
     <tr>
       <th>No</th>
@@ -23,6 +23,16 @@
       <th>Opsi</th>
     </tr>
   </thead>
+  <script>
+    $(document).ready(function() {
+  $('#table').DataTable({
+    dom: 'Bfrtip',
+    buttons: [
+      'copy', 'excel', 'pdf'
+    ]
+  });
+});
+  </script>
   <tbody>
     <?php
     $no = 1;
@@ -128,6 +138,8 @@
     <?php } ?>
   </tbody>
 </table>
+
+
 <?php
 if (isset($_POST['TambahProduk'])) {
   $kodeproduk = htmlspecialchars($_POST['Tambah_Kode_Produk']);

@@ -5,6 +5,7 @@ $i1 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(qty) as totqty FROM lap
 $i2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(qty*harga_modal) as totdpt FROM laporan WHERE toko = '" . $_SESSION['toko'] . "'"));
 $i3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(subtotal-qty*harga_modal) as totdpt1 FROM laporan WHERE toko = '" . $_SESSION['toko'] . "'"));
 $i4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(subtotal) as isub FROM laporan WHERE toko = '" . $_SESSION['toko'] . "'"));
+
 ?>
 <h1 class="h3 mb-2">Data Laporan</h1>
 <div class="row">
@@ -53,6 +54,16 @@ $i4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(subtotal) as isub FROM 
       <th>Opsi</th>
     </tr>
   </thead>
+  <script>
+    $(document).ready(function() {
+  $('#table').DataTable({
+    dom: 'Bfrtip',
+    buttons: [
+      'copy', 'excel', 'pdf'
+    ]
+  });
+});
+  </script>
   <tbody>
     <?php
     $no = 1;

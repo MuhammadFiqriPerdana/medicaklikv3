@@ -65,7 +65,7 @@ $Datee = $DataInv['tgl_inv'];
   </tbody>
 </table>
 <?php
-$i4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(subtotal) as isub FROM laporan WHERE invoice='$noinv'"));
+$i4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(subtotal) as isub FROM laporan L LEFT JOIN produk P ON L.kode_produk = P.kode_produk WHERE invoice='$noinv'"));
 ?>
 <div class="row justify-content-end mt-1">
 
@@ -172,7 +172,7 @@ $i4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(subtotal) as isub FROM 
       </div>
       <?php
       $no = 1;
-      $dataprint = mysqli_query($conn, "SELECT * FROM laporan WHERE invoice='$noinv'");
+      $dataprint = mysqli_query($conn, "SELECT * FROM laporan L LEFT JOIN produk P ON L.kode_produk = P.kode_produk WHERE invoice='$noinv'");
       while ($c = mysqli_fetch_array($dataprint)) {
       ?>
         <div class="col-12">
@@ -275,7 +275,9 @@ if (isset($_POST['SimpanEdit'])) {
   $hitung = $harga1 * $qty1;
 
   $update =  mysqli_query($conn, "UPDATE laporan SET kode_produk='$kodeproduk1', harga='$harga1',qty='$qty1',subtotal='$hitung' WHERE idlaporan='$Didlpaoran' AND toko = '" . $_SESSION['toko'] . "'") or die(mysqli_connect_error());
-  
+  if($update) {
+    echo '<script>window.location="invoice.php?detail=' . $noinv . '"</script>';
+  }
  
     
 };
