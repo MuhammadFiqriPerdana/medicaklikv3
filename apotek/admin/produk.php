@@ -161,21 +161,56 @@ if (isset($_POST['TambahProduk'])) {
 
   $hasilpajakdiskon1 = $harga_jual + $potong_pajak1 - $potong_diskon1;
 
-  $cekkode = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM produk WHERE kode_produk='$kodeproduk' AND toko = '" . $_SESSION['toko'] . "'"));
+  $cekkode = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM produk WHERE kode_produk='$kodeproduk_sanitized' AND toko = '" . $_SESSION['toko'] . "'"));
+
+
   if ($diskon >= 0) {
-    $InputProduk = mysqli_query($conn, "INSERT INTO produk (kode_produk,nama_produk, id_suplier, harga_modal,harga_jual_asal,diskon,pajak,harga_jual_setelah,tgl_input, tgl_kadaluarsa, stok, toko) values ('$kodeproduk','$namaproduk','$namasuplier12','$harga_modal','$harga_jual','$diskon1','$pajak1','$hasildiskon1','$tanggal_input','$tanggal_kadaluarsa', '$stok', '" . $_SESSION['toko'] . "')");
-    echo '<script>window.location.reload(history.back());</script>';
+    $query = "INSERT INTO produk (kode_produk,nama_produk, id_suplier, harga_modal,harga_jual_asal,diskon,pajak,harga_jual_setelah,tgl_input, tgl_kadaluarsa, stok, toko) values ('$kodeproduk','$namaproduk','$namasuplier12','$harga_modal','$harga_jual','$diskon1','$pajak1','$hasildiskon1','$tanggal_input','$tanggal_kadaluarsa', '$stok', '" . $_SESSION['toko'] . "')";
   } elseif ($pajak >= 0) {
-    $InputProduk1 = mysqli_query($conn, "INSERT INTO produk (kode_produk,nama_produk, id_suplier, harga_modal,harga_jual_asal,diskon,pajak,harga_jual_setelah,tgl_input, tgl_kadaluarsa, stok, toko) values ('$kodeproduk','$namaproduk','$namasuplier12','$harga_modal','$harga_jual','$diskon1','$pajak1','$hasilpajak1','$tanggal_input','$tanggal_kadaluarsa', '$stok', '" . $_SESSION['toko'] . "')");
-    echo '<script>window.location.reload(history.back());</script>';
+    $query = "INSERT INTO produk (kode_produk,nama_produk, id_suplier, harga_modal,harga_jual_asal,diskon,pajak,harga_jual_setelah,tgl_input, tgl_kadaluarsa, stok, toko) values ('$kodeproduk','$namaproduk','$namasuplier12','$harga_modal','$harga_jual','$diskon1','$pajak1','$hasilpajak1','$tanggal_input','$tanggal_kadaluarsa', '$stok', '" . $_SESSION['toko'] . "')";
   } elseif ($diskon && $pajak >= 0) {
-    $InputProduk2 = mysqli_query($conn, "INSERT INTO produk (kode_produk,nama_produk, id_suplier, harga_modal,harga_jual_asal,diskon,pajak,harga_jual_setelah,tgl_input, tgl_kadaluarsa, stok, toko) values ('$kodeproduk','$namaproduk','$namasuplier12','$harga_modal','$harga_jual','$diskon1','$pajak1','$hasilpajakdiskon1','$tanggal_input','$tanggal_kadaluarsa', '$stok', '" . $_SESSION['toko'] . "')");
-    echo '<script>window.location.reload(history.back());</script>';
+    $query = "INSERT INTO produk (kode_produk,nama_produk, id_suplier, harga_modal,harga_jual_asal,diskon,pajak,harga_jual_setelah,tgl_input, tgl_kadaluarsa, stok, toko) values ('$kodeproduk','$namaproduk','$namasuplier12','$harga_modal','$harga_jual','$diskon1','$pajak1','$hasilpajakdiskon1','$tanggal_input','$tanggal_kadaluarsa', '$stok', '" . $_SESSION['toko'] . "')";
   } else {
-    $InputProduk4 = mysqli_query($conn, "INSERT INTO produk (kode_produk,nama_produk,id_suplier,harga_modal,harga_jual_asal, harga_jual_setelah, tgl_input, tgl_kadaluarsa, stok, toko) values ('$kodeproduk','$namaproduk','$namasuplier12','$harga_modal','$harga_jual', '$harga_jual''$tanggal_input','$tanggal_kadaluarsa', '$stok', '" . $_SESSION['toko'] . "')");
-    echo '<script>window.location.reload(history.back());</script>';
+    $query = "INSERT INTO produk (kode_produk,nama_produk,id_suplier,harga_modal,harga_jual_asal, harga_jual_setelah, tgl_input, tgl_kadaluarsa, stok, toko) values ('$kodeproduk','$namaproduk','$namasuplier12','$harga_modal','$harga_jual', '$harga_jual','$tanggal_input','$tanggal_kadaluarsa', '$stok', '" . $_SESSION['toko'] . "')";
   }
-};
+
+  if ($cekkode > 0) {
+    echo '<script>
+      swal({
+        title: "Kesalahan",
+        text: "Produk dengan kode yang sama sudah ada.",
+        icon: "error",
+        button: "OK",
+      });
+    </script>';
+  } elseif (mysqli_query($conn, $query)) {
+    echo '<script>
+      swal({
+        title: "Konfirmasi",
+        text: "Apakah Anda yakin ingin menyimpan data?",
+        icon: "warning",
+        buttons: ["Batal", "Simpan"],
+        dangerMode: true,
+      }).then(function(willSave) {
+        if (willSave) {
+          swal("Data berhasil disimpan.", { icon: "success" });
+          window,location="produk.php"
+        } else {
+          swal("Aksi dibatalkan.", { icon: "error" });
+        }
+      });
+    </script>';
+  } else {
+    echo '<script>
+      swal({
+        title: "Kesalahan",
+        text: "Terjadi kesalahan dalam menyimpan data.",
+        icon: "error",
+        button: "OK",
+      });
+    </script>';
+  }
+}
 if (isset($_POST['SimpanEdit'])) {
   $idproduk1 = htmlspecialchars($_POST['idproduk']);
   $kodeproduk1 = htmlspecialchars($_POST['Edit_Kode_Produk']);
@@ -430,7 +465,7 @@ function setCameraConstraints(deviceId) {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-          <button type="submit" name="TambahProduk" class="btn btn-primary">Simpan</button>
+          <button type="submit" name="TambahProduk" onclick="" class="btn btn-primary">Simpan</button>
         </div>
     </div>
 

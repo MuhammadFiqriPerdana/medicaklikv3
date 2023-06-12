@@ -42,6 +42,7 @@
   <script type="text/javascript">
 $(document).ready(function() {
     $('#table').DataTable({
+      
         dom: 'Bfrtip',
         buttons: [
             {
@@ -64,7 +65,9 @@ $(document).ready(function() {
                 text: 'Cetak',
                 className: 'dt-button'
             }
-        ]
+        ], 
+        responsive: true,
+        scrollX: true
     });
 });
   </script>
